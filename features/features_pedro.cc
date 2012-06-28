@@ -30,6 +30,8 @@ static inline double max(double x, double y) { return (x <= y ? y : x); }
 static inline int min(int x, int y) { return (x <= y ? x : y); }
 static inline int max(int x, int y) { return (x <= y ? y : x); }
 
+static inline double round(double x) { return (floor(x + 0.5)); }
+
 // main function:
 // takes a double color image and a bin size 
 // returns HOG features

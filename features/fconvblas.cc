@@ -1,6 +1,6 @@
 #include "mex.h"
 #include "blas.h"
-#include <pthread.h>
+//#include <pthread.h>
 #include <math.h>
 #include <string.h>
 #include <iostream>
@@ -74,7 +74,8 @@ void *process(void *thread_arg) {
       dgemv(&chn, &m, &n, &one, A_off, &lda, B_off, &incx, &one, C_off, &incy);
     }
   }
-  pthread_exit(NULL);
+  // pthread_exit(NULL);
+  return NULL;
 }
 
 // matlab entry point
@@ -108,7 +109,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
   // start threads
   thread_data *td = (thread_data *)mxCalloc(len, sizeof(thread_data));
-  pthread_t *ts = (pthread_t *)mxCalloc(len, sizeof(pthread_t));
+  //pthread_t *ts = (pthread_t *)mxCalloc(len, sizeof(pthread_t));
   const mwSize *A_dims = mxGetDimensions(mxA);
   double *A = prepare_map((double *)mxGetPr(mxA), A_dims);
   std::vector<bool> skips(len,false);
@@ -147,9 +148,9 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
 
     if (skips[i] == false)
     {
-      if (pthread_create(&ts[i], NULL, process, (void *)&td[i]))
-        mexErrMsgTxt("fconvblas.cc: Error creating thread");  
-
+      // if (pthread_create(&ts[i], NULL, process, (void *)&td[i]))
+      //   mexErrMsgTxt("fconvblas.cc: Error creating thread");  
+      process((void *)&td[i]);
     }
   }
 
@@ -157,14 +158,14 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[]) {
   void *status;
   plhs[0] = mxCreateCellMatrix(1, len);
   for (int i = 0; i < len; i++) {
-    if (skips[i] == false)
-      pthread_join(ts[i], &status);
+    // if (skips[i] == false)
+    //   pthread_join(ts[i], &status);
 
     mxSetCell(plhs[0], i, td[i].mxC);
     mxFree(td[i].B);
   }
   mxFree(A);
   mxFree(td);
-  mxFree(ts);
+  // mxFree(ts);
 }
 
