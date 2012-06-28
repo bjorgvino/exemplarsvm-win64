@@ -21,6 +21,9 @@ This fork contains a few changes in the MATLAB and C++ code to get it to compile
   - You need to restart MATLAB after you change the PATH environment variable
 - Replace "bzero(a,b)" with "memset(a,0,b)" where needed:
   - features/resize.cc
+- Replace "alphainfo ofs[len];" with "struct alphainfo *ofs = (struct alphainfo*)malloc(len * sizeof(alphainfo));"
+  - features/resize.cc
+  - The Microsoft Visual C++ compiler doesn't seem to handle variables when initializing arrays.
 - Add "static inline double round(double x) { return (floor(x + 0.5)); }" where needed:
   - features/resize.cc
   - features/features_raw.cc
