@@ -73,6 +73,7 @@ void resize1dtran(double *src, int sheight, double *dst, int dheight,
       alphacopy(s, d, ofs, k);
     }
   }
+  free(ofs);
 }
 
 // main function
